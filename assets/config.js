@@ -32,10 +32,9 @@ const IRAM_CONFIG = {
   // on the public tracking page so they can see who is working on their ticket.
   // The label that appears everywhere is "Name · Role" (e.g. "Sean · Support").
   itStaff: [
-    { name: 'Sean',  role: 'Support' },        // ← edit / add real people
-    { name: 'Carl',  role: 'Dev' },
-    { name: 'Mark',  role: 'Ops' },
-    // { name: 'Jane', role: 'Support' },
+    { name: 'Mark', role: 'Lead Dev' },
+    { name: 'Sean', role: 'Vibe Dev' },
+    { name: 'Carl', role: 'Vibe Dev' },
   ],
 
   // ── Company Info ─────────────────────────────────────────────────────────
