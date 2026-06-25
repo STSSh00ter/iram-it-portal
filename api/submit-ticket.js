@@ -12,14 +12,18 @@ module.exports = async function handler(req, res) {
   const uniqueID = String(Math.floor(Math.random() * 90000) + 10000);
   const ticketID = `IT-${year}-${uniqueID}`;
 
-  // Call Power Automate for SharePoint + Calendar (fire and forget — URL is hidden server-side)
+  // Call Power Automate for SharePoint + Calendar
   const paUrl = process.env.POWER_AUTOMATE_URL;
   if (paUrl) {
-    fetch(paUrl, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ ...body, ticketID })
-    }).catch(() => {});
+    try {
+      await fetch(paUrl, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ ...body, ticketID })
+      });
+    } catch (err) {
+      console.error('PA call error:', err.message);
+    }
   }
 
   // Send emails via Resend
