@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iRam IT Support — Track a Ticket</title>
+  <meta name="description" content="Check the status and progress of an existing iRam IT support ticket.">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔎</text></svg>">
+  <style>
+    .track-wrap { max-width: 640px; margin: 0 auto; }
+    .track-search { display: flex; gap: 10px; margin-top: 8px; }
+    .track-search input {
+      flex: 1; padding: 14px 16px; border: 1.5px solid #dde; border-radius: 8px;
+      font-size: 16px; outline: none; text-transform: uppercase; letter-spacing: 1px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .track-search input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(107,191,78,.15); }
+    .track-search button {
+      background: var(--green); color: #fff; border: none; border-radius: 8px;
+      padding: 0 22px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background .2s;
+    }
+    .track-search button:hover { background: var(--green-dark); }
+    .track-search button:disabled { opacity: .6; cursor: default; }
+
+    .track-msg { text-align: center; padding: 36px 20px; color: #888; font-size: 14px; }
+    .track-msg.error { color: var(--danger, #d83b01); }
+
+    .result-card { margin-top: 24px; display: none; }
+    .result-head {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid #eee;
+    }
+    .result-head .rh-num { font-size: 22px; font-weight: 800; color: var(--dark); letter-spacing: 1px; }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 7px; padding: 6px 14px;
+      border-radius: 20px; font-size: 13px; font-weight: 700;
+    }
+    .status-pill .dot { width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+
+    /* Status timeline */
+    .timeline { display: flex; margin: 26px 0 6px; }
+    .tl-step { flex: 1; text-align: center; position: relative; }
+    .tl-step::before {
+      content: ''; position: absolute; top: 13px; left: -50%; width: 100%; height: 3px;
+      background: #e3e6ea; z-index: 0;
+    }
+    .tl-step:first-child::before { display: none; }
+    .tl-step.done::before { background: var(--green); }
+    .tl-dot {
+      width: 28px; height: 28px; border-radius: 50%; background: #e3e6ea; color: #fff;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;
+      position: relative; z-index: 1; font-size: 14px; font-weight: 700;
+    }
+    .tl-step.done .tl-dot { background: var(--green); }
+    .tl-step.current .tl-dot { background: var(--green-dark); box-shadow: 0 0 0 4px rgba(107,191,78,.2); }
+    .tl-label { font-size: 12px; color: #888; font-weight: 600; }
+    .tl-step.done .tl-label, .tl-step.current .tl-label { color: var(--dark); }
+
+    .result-meta { margin-top: 20px; border: 1px solid #eee; border-radius: 8px; overflow: hidden; }
+    .result-meta .row { display: flex; font-size: 13px; }
+    .result-meta .row:nth-child(odd) { background: #f9f9f9; }
+    .result-meta .key { width: 150px; padding: 11px 16px; font-weight: 600; color: #555; }
+    .result-meta .val { padding: 11px 16px; color: #333; }
+
+    .public-update {
+      margin-top: 18px; background: #edf7e8; border: 1px solid #cfe8bf;
+      border-radius: 8px; padding: 16px 18px;
+    }
+    .public-update .pu-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: .6px;
+      color: var(--green-dark); font-weight: 700; margin-bottom: 6px;
+    }
+    .public-update .pu-text { font-size: 14px; color: #333; line-height: 1.6; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="site-header">
+    <a href="/" class="logo">
+      <svg class="logo-icon" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="14" y="2"  width="10" height="10" rx="2" fill="#6BBF4E"/>
+        <rect x="14" y="26" width="10" height="10" rx="2" fill="#6BBF4E"/>
+        <rect x="2"  y="14" width="10" height="10" rx="2" fill="#6BBF4E"/>
+        <rect x="26" y="14" width="10" height="10" rx="2" fill="#6BBF4E"/>
+        <rect x="14" y="14" width="10" height="10" rx="2" fill="#4e9938"/>
+      </svg>
+      <span class="logo-text">
+        <span class="brand">iRam</span>
+        <span class="sub">IT Support</span>
+      </span>
+    </a>
+    <div class="header-actions">
+      <a href="index.html" class="header-new-btn" style="text-decoration:none"><span>＋</span> Log New Ticket</a>
+      <a href="hr.html" class="header-badge" style="text-decoration:none">HR Contact</a>
+    </div>
+  </header>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <h1>Track Your <span>Support Ticket</span></h1>
+    <p>Enter your ticket number to see its current status and the latest update from the IT team.</p>
+  </section>
+
+  <!-- ── MAIN ── -->
+  <main class="main-content">
+    <div class="card track-wrap">
+      <div class="card-header">
+        <span class="icon">🔎</span>
+        <h2>Find a Ticket</h2>
+      </div>
+      <div class="card-body">
+
+        <form id="track-form">
+          <label for="ticket-input" style="display:block;font-size:12px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Ticket Number</label>
+          <div class="track-search">
+            <input type="text" id="ticket-input" placeholder="IT-2026-12345" autocomplete="off" spellcheck="false">
+            <button type="submit" id="track-btn">Track</button>
+          </div>
+          <p style="font-size:12px;color:#aaa;margin-top:8px">Your ticket number was emailed to you when you logged the ticket.</p>
+        </form>
+
+        <div id="track-message" class="track-msg" style="display:none"></div>
+
+        <!-- RESULT -->
+        <div id="result-card" class="result-card">
+          <div class="result-head">
+            <div class="rh-num" id="r-ticket">—</div>
+            <span class="status-pill" id="r-status-pill"><span class="dot"></span><span id="r-status-text">—</span></span>
+          </div>
+
+          <div class="timeline" id="r-timeline">
+            <div class="tl-step" data-step="Open"><div class="tl-dot">1</div><div class="tl-label">Logged</div></div>
+            <div class="tl-step" data-step="In Progress"><div class="tl-dot">2</div><div class="tl-label">In Progress</div></div>
+            <div class="tl-step" data-step="Resolved"><div class="tl-dot">✓</div><div class="tl-label">Resolved</div></div>
+          </div>
+
+          <div class="public-update" id="r-update-wrap" style="display:none">
+            <div class="pu-label">Latest update from IT</div>
+            <div class="pu-text" id="r-update">—</div>
+          </div>
+
+          <div class="result-meta">
+            <div class="row"><span class="key">Assigned to</span><span class="val" id="r-assigned">—</span></div>
+            <div class="row"><span class="key">Category</span><span class="val" id="r-category">—</span></div>
+            <div class="row"><span class="key">Submitted</span><span class="val" id="r-submitted">—</span></div>
+            <div class="row"><span class="key">Last Updated</span><span class="val" id="r-updated">—</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>iRam IT Support Portal &nbsp;|&nbsp; Powered by <span>iRam</span> &amp; Microsoft 365</p>
+  </footer>
+
+  <script>
+  (function () {
+    const form    = document.getElementById('track-form');
+    const input   = document.getElementById('ticket-input');
+    const btn     = document.getElementById('track-btn');
+    const msg     = document.getElementById('track-message');
+    const card    = document.getElementById('result-card');
+
+    const STATUS_STYLE = {
+      'Open':        { color: '#986f0b', bg: '#fffbef' },
+      'In Progress': { color: '#0067b8', bg: '#eff6fc' },
+      'Resolved':    { color: '#498205', bg: '#edf7e8' },
+      'Closed':      { color: '#498205', bg: '#edf7e8' },
+      'On Hold':     { color: '#8a8886', bg: '#f3f2f1' }
+    };
+    const STEP_INDEX = { 'Open': 0, 'In Progress': 1, 'Resolved': 2, 'Closed': 2 };
+
+    function showMsg(text, isError) {
+      card.style.display = 'none';
+      msg.textContent = text;
+      msg.className = 'track-msg' + (isError ? ' error' : '');
+      msg.style.display = 'block';
+    }
+
+    function fmtDate(d) {
+      if (!d) return '—';
+      try { return new Date(d).toLocaleString('en-ZA', { dateStyle: 'medium', timeStyle: 'short' }); }
+      catch (_) { return d; }
+    }
+
+    function renderResult(t) {
+      msg.style.display = 'none';
+      document.getElementById('r-ticket').textContent    = t.ticketID;
+      document.getElementById('r-assigned').textContent  = (t.assignedTo && t.assignedTo.trim()) ? t.assignedTo : 'Awaiting assignment';
+      document.getElementById('r-category').textContent  = t.category || '—';
+      document.getElementById('r-submitted').textContent = fmtDate(t.submittedAt);
+      document.getElementById('r-updated').textContent   = fmtDate(t.lastUpdated);
+
+      const status = t.status || 'Open';
+      const style  = STATUS_STYLE[status] || { color: '#555', bg: '#f3f2f1' };
+      const pill   = document.getElementById('r-status-pill');
+      pill.style.color = style.color;
+      pill.style.background = style.bg;
+      document.getElementById('r-status-text').textContent = status;
+
+      // Timeline
+      const idx = STEP_INDEX[status] ?? 0;
+      document.querySelectorAll('#r-timeline .tl-step').forEach((el, i) => {
+        el.classList.remove('done', 'current');
+        if (i < idx) el.classList.add('done');
+        else if (i === idx) el.classList.add('done', 'current');
+      });
+
+      // Public update
+      const upWrap = document.getElementById('r-update-wrap');
+      if (t.publicUpdate && t.publicUpdate.trim()) {
+        document.getElementById('r-update').textContent = t.publicUpdate;
+        upWrap.style.display = 'block';
+      } else {
+        upWrap.style.display = 'none';
+      }
+
+      card.style.display = 'block';
+    }
+
+    async function lookup(ticket) {
+      btn.disabled = true; btn.textContent = '…';
+      showMsg('Looking up your ticket…', false);
+      try {
+        const res  = await fetch(`/api/track?ticket=${encodeURIComponent(ticket)}`, { cache: 'no-store' });
+        const data = await res.json();
+        if (res.status === 404 || data.found === false) {
+          showMsg(`No ticket found with number ${ticket}. Please check the number and try again.`, true);
+        } else if (!res.ok) {
+          showMsg(data.error || 'Something went wrong. Please try again shortly.', true);
+        } else {
+          renderResult(data);
+        }
+      } catch (_) {
+        showMsg('Could not reach the server. Please check your connection and try again.', true);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Track';
+      }
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const ticket = input.value.trim().toUpperCase();
+      if (!/^IT-\d{4}-\d{3,6}$/.test(ticket)) {
+        showMsg('Please enter a valid ticket number, e.g. IT-2026-12345.', true);
+        return;
+      }
+      lookup(ticket);
+    });
+
+    // Allow deep-linking: /track.html?ticket=IT-2026-12345
+    const pre = new URLSearchParams(location.search).get('ticket');
+    if (pre) { input.value = pre.toUpperCase(); form.requestSubmit(); }
+  })();
+  </script>
+</body>
+</html>

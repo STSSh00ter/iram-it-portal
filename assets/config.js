@@ -29,11 +29,15 @@ const IRAM_CONFIG = {
   // Simple password for the IT admin panel (change this!)
   adminPassword:    'iRamIT2024!',                                      // ←
 
-  // Names of IT staff members (shown in "Assign To" dropdown)
+  // IT staff who can be assigned to a ticket.
+  // `role` groups them (Dev / Ops / Support / etc.) and is shown to the submitter
+  // on the public tracking page so they can see who is working on their ticket.
+  // The label that appears everywhere is "Name · Role" (e.g. "Sean · Support").
   itStaff: [
-    'IT Support',
-    // 'Sato Gilles',      // ← add real names
-    // 'John Smith',
+    { name: 'Sean',  role: 'Support' },        // ← edit / add real people
+    { name: 'Carl',  role: 'Dev' },
+    { name: 'Mark',  role: 'Ops' },
+    // { name: 'Jane', role: 'Support' },
   ],
 
   // ── Company Info ─────────────────────────────────────────────────────────

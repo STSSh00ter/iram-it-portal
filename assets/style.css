@@ -113,6 +113,23 @@ body {
 .header-new-btn:hover  { background: #e9f5e2; }
 .header-new-btn:active { transform: scale(0.97); }
 
+.header-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: rgba(255,255,255,0.85);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+.header-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.55); }
+
 /* ── HERO ── */
 .hero {
   background: linear-gradient(135deg, var(--dark) 0%, #3a3a3a 100%);

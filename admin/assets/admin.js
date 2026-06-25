@@ -9,6 +9,20 @@ if (sessionStorage.getItem('iram_it_auth') !== 'true') {
 
 const CFG = (typeof IRAM_CONFIG !== 'undefined') ? IRAM_CONFIG : {};
 
+// ── "Assigned To" options from config (Name · Role) ───────────────────────────
+// Supports both the new object form ({name, role}) and plain-string legacy entries.
+function staffLabel(s) {
+  if (typeof s === 'string') return s;
+  return s.role ? `${s.name} · ${s.role}` : s.name;
+}
+function populateAssignDropdown() {
+  const sel = document.getElementById('m-assigned');
+  if (!sel) return;
+  const staff = Array.isArray(CFG.itStaff) ? CFG.itStaff : [];
+  sel.innerHTML = '<option value="">Unassigned</option>' +
+    staff.map(s => { const l = staffLabel(s); return `<option value="${esc(l)}">${esc(l)}</option>`; }).join('');
+}
+
 // ── State ─────────────────────────────────────────────────────────────────────
 let allTickets   = [];
 let activeTab    = 'Open';
@@ -207,9 +221,18 @@ function openTicketModal(id) {
 
   document.getElementById('m-status').value      = t.Status || 'Open';
   document.getElementById('m-priority').value    = t.Priority || 'Medium';
-  document.getElementById('m-assigned').value    = t.AssignedTo || '';
-  document.getElementById('m-notes').value       = t.Notes || '';
-  document.getElementById('m-reply').value       = '';
+
+  // Assigned-to dropdown — make sure the ticket's current value is selectable
+  const assignSel = document.getElementById('m-assigned');
+  const current   = t.AssignedTo || '';
+  if (current && ![...assignSel.options].some(o => o.value === current)) {
+    assignSel.insertAdjacentHTML('beforeend', `<option value="${esc(current)}">${esc(current)}</option>`);
+  }
+  assignSel.value = current;
+
+  document.getElementById('m-public-update').value = t.PublicUpdate || '';
+  document.getElementById('m-notes').value         = t.Notes || '';
+  document.getElementById('m-reply').value         = '';
 
   document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -230,11 +253,12 @@ function closeModal() {
 document.getElementById('btn-save').addEventListener('click', async () => {
   if (!openTicket) return;
   const updates = {
-    id:         openTicket.id,
-    Status:     document.getElementById('m-status').value,
-    Priority:   document.getElementById('m-priority').value,
-    AssignedTo: document.getElementById('m-assigned').value,
-    Notes:      document.getElementById('m-notes').value,
+    id:           openTicket.id,
+    Status:       document.getElementById('m-status').value,
+    Priority:     document.getElementById('m-priority').value,
+    AssignedTo:   document.getElementById('m-assigned').value,
+    PublicUpdate: document.getElementById('m-public-update').value,
+    Notes:        document.getElementById('m-notes').value,
   };
 
   // Update local state
@@ -302,4 +326,5 @@ document.getElementById('logout-btn').addEventListener('click', () => {
 });
 
 // ── Init ──────────────────────────────────────────────────────────────────────
+populateAssignDropdown();
 fetchTickets();

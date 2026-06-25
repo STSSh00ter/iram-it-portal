@@ -184,10 +184,16 @@
             </div>
             <div class="ctrl-group" style="grid-column:1/-1">
               <label>Assigned To</label>
-              <input type="text" class="ctrl-input" id="m-assigned" placeholder="Enter IT staff name…">
+              <select class="ctrl-select" id="m-assigned">
+                <option value="">Unassigned</option>
+              </select>
             </div>
             <div class="ctrl-group" style="grid-column:1/-1">
-              <label>Internal Notes (not sent to user)</label>
+              <label>Public Update <span style="font-weight:400;color:#888">(shown to the submitter on the tracking page)</span></label>
+              <textarea class="notes-area" id="m-public-update" placeholder="A short progress update the submitter will see, e.g. 'Replacement laptop ordered, arriving Friday.'"></textarea>
+            </div>
+            <div class="ctrl-group" style="grid-column:1/-1">
+              <label>Internal Notes <span style="font-weight:400;color:#888">(private — never shown to the user)</span></label>
               <textarea class="notes-area" id="m-notes" placeholder="Add internal notes, steps taken, follow-up actions…"></textarea>
             </div>
           </div>

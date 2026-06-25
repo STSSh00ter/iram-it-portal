@@ -214,6 +214,8 @@ document.getElementById('ticket-form').addEventListener('submit', async (e) => {
 
   // Populate success screen
   document.getElementById('s-ticket-id').textContent = ticketID;
+  const trackLink = document.getElementById('track-this-link');
+  if (trackLink) trackLink.href = `track.html?ticket=${encodeURIComponent(ticketID)}`;
   document.getElementById('s-name').textContent      = name;
   document.getElementById('s-email').textContent     = email;
   document.getElementById('s-category').textContent  = cat;
