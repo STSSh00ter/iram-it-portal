@@ -52,7 +52,7 @@ async function sendEmail({ to, subject, html }) {
       'Content-Type':  'application/json'
     },
     body: JSON.stringify({
-      from:    'iRam IT Support <onboarding@resend.dev>',
+      from:    'iRam IT Support <noreply@outerjoin.co.za>',
       to:      [to],
       subject,
       html
