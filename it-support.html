@@ -40,10 +40,10 @@
     <h1>IT Support <span>Request Portal</span></h1>
     <p>Fill in the form below to log a ticket. Your ticket number is generated instantly and a support slot is booked in your IT technician's calendar.</p>
     <div class="hero-channels">
-      <span class="channel-pill"><span class="dot"></span> Web Form</span>
-      <span class="channel-pill"><span class="dot"></span> Email</span>
-      <span class="channel-pill"><span class="dot"></span> WhatsApp</span>
-      <span class="channel-pill"><span class="dot"></span> Auto Calendar Booking</span>
+      <a href="#ticket-form" class="channel-pill"><span class="dot"></span> Web Form</a>
+      <a href="mailto:it-support@iram.co.za" class="channel-pill"><span class="dot"></span> Email</a>
+      <a id="hero-wa-pill" href="https://wa.me/27000000000" target="_blank" rel="noopener" class="channel-pill"><span class="dot"></span> WhatsApp</a>
+      <span class="channel-pill info-pill"><span class="dot"></span> 📅 Calendar Invite Included</span>
     </div>
   </section>
 
@@ -250,5 +250,11 @@
 
   <script src="assets/config.js"></script>
   <script src="assets/script.js"></script>
+  <script>
+    // Keep WA hero pill in sync with config
+    if (typeof IRAM_CONFIG !== 'undefined' && IRAM_CONFIG.whatsappNumber) {
+      document.getElementById('hero-wa-pill').href = 'https://wa.me/' + IRAM_CONFIG.whatsappNumber;
+    }
+  </script>
 </body>
 </html>

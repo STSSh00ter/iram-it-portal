@@ -192,6 +192,21 @@ body {
   display: flex;
   align-items: center;
   gap: 5px;
+  text-decoration: none;
+}
+a.channel-pill {
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+a.channel-pill:hover {
+  background: rgba(107,191,78,0.25);
+  border-color: rgba(107,191,78,0.6);
+  color: #fff;
+}
+.channel-pill.info-pill {
+  opacity: 0.6;
+  font-style: italic;
+  cursor: default;
 }
 
 .channel-pill .dot {
