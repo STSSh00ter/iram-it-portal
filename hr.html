@@ -67,10 +67,21 @@
     .sp-arrow { margin-left:auto; color:#6BBF4E; font-size:18px; }
 
     /* Lightbox */
-    .lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:9999; align-items:center; justify-content:center; padding:24px; cursor:zoom-out; }
-    .lightbox.open { display:flex; }
-    .lightbox img { max-width:90vw; max-height:90vh; border-radius:8px; box-shadow:0 8px 40px rgba(0,0,0,.5); }
-    .lightbox-close { position:fixed; top:18px; right:22px; color:#fff; font-size:28px; cursor:pointer; line-height:1; }
+    .lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:9999; overflow:auto; padding:40px 24px; box-sizing:border-box; cursor:zoom-out; }
+    .lightbox.open { display:block; }
+    .lightbox img { display:block; margin:auto; border-radius:8px; box-shadow:0 8px 40px rgba(0,0,0,.5); touch-action:pinch-zoom; cursor:default; }
+    .lightbox-close { position:fixed; top:18px; right:22px; color:#fff; font-size:28px; cursor:pointer; line-height:1; z-index:1; }
+
+    /* Welcome info modal */
+    .welcome-modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:9100; align-items:center; justify-content:center; padding:20px; }
+    .welcome-modal-bg.open { display:flex; }
+    .welcome-modal { background:#fff; border-radius:14px; padding:32px 28px; width:100%; max-width:420px; box-shadow:0 12px 48px rgba(0,0,0,.25); }
+    .welcome-modal h3 { font-size:18px; font-weight:700; color:#2D2D2D; margin:0 0 10px; display:flex; align-items:center; gap:10px; }
+    .welcome-modal .wm-body { font-size:13.5px; color:#555; line-height:1.7; margin-bottom:20px; }
+    .welcome-modal .wm-email { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:#6BBF4E; color:#fff; border:none; border-radius:8px; padding:13px 18px; font-size:14px; font-weight:700; cursor:pointer; text-decoration:none; transition:background .15s; }
+    .welcome-modal .wm-email:hover { background:#4e9938; }
+    .welcome-modal .wm-cancel { display:block; text-align:center; margin-top:12px; font-size:13px; color:#888; cursor:pointer; }
+    .welcome-modal .wm-cancel:hover { color:#555; }
 
     /* Docs */
     .docs-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; }
@@ -287,7 +298,7 @@
           <div class="sp-links">
             <p style="font-size:13.5px;font-weight:600;color:#2D2D2D;margin-bottom:6px">Access SimplePay:</p>
 
-            <a href="https://apps.apple.com/za/app/simplepay-self-service/id1501139428" target="_blank" rel="noopener" class="sp-link-btn">
+            <a href="https://apps.apple.com/app/id1501139428" target="_blank" rel="noopener" class="sp-link-btn">
               <span class="sp-icon">🍎</span>
               <div><div class="sp-label">App Store</div><div class="sp-sub">Download for iPhone / iPad</div></div>
               <span class="sp-arrow">→</span>
@@ -315,8 +326,8 @@
 
     <!-- Lightbox -->
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-      <span class="lightbox-close">✕</span>
-      <img src="hr-assets/simplepay-guide.jpg" alt="SimplePay Guide">
+      <span class="lightbox-close" onclick="closeLightbox()">✕</span>
+      <img src="hr-assets/simplepay-guide.jpg" alt="SimplePay Guide" onclick="event.stopPropagation()">
     </div>
 
     <!-- ══ 4. FLEXICARE ══ -->
@@ -428,22 +439,32 @@
     <div class="white-card">
       <div class="white-card-header"><span style="font-size:20px">🎉</span><h2>Welcome Package &amp; Onboarding</h2></div>
       <div class="white-card-body">
-        <p style="font-size:13.5px;color:#555;margin-bottom:16px;line-height:1.7">New employees receive a Welcome Package by email on their first day. Click any item below to request a copy from HR.</p>
+        <p style="font-size:13.5px;color:#555;margin-bottom:16px;line-height:1.7">New employees receive a Welcome Package by email on their first day. Click any item below to find out what it contains and request a copy from HR.</p>
         <div class="welcome-grid">
-          <a href="mailto:hr@iram.co.za?subject=Document Request — Employee Handbook" class="welcome-box">
+          <div class="welcome-box" onclick="openWelcomeModal('handbook')">
             <span style="font-size:24px">📘</span>
             <div><div class="wb-title">Employee Handbook</div><div class="wb-sub">Company overview &amp; expectations</div></div>
-          </a>
-          <a href="mailto:hr@iram.co.za?subject=Document Request — 5 Fundamental Rules" class="welcome-box">
+          </div>
+          <div class="welcome-box" onclick="openWelcomeModal('fundamental')">
             <span style="font-size:24px">⭐</span>
             <div><div class="wb-title">5 Fundamental Rules</div><div class="wb-sub">The non-negotiable standards</div></div>
-          </a>
-          <a href="mailto:hr@iram.co.za?subject=Document Request — 5 Confidential Rules" class="welcome-box confidential">
+          </div>
+          <div class="welcome-box confidential" onclick="openWelcomeModal('confidential')">
             <span style="font-size:24px">🔒</span>
             <div><div class="wb-title">5 Confidential Rules</div><div class="wb-sub">What stays within iRam</div></div>
-          </a>
+          </div>
         </div>
         <p style="font-size:12.5px;color:#888">Didn't receive your welcome package? <a href="mailto:hr@iram.co.za?subject=Welcome Package Resend Request" style="color:#4e9938">Email HR</a> and we'll resend it.</p>
+      </div>
+    </div>
+
+    <!-- Welcome modal -->
+    <div class="welcome-modal-bg" id="welcome-modal-bg" onclick="closeWelcomeModal()">
+      <div class="welcome-modal" onclick="event.stopPropagation()">
+        <h3 id="wm-title"></h3>
+        <div class="wm-body" id="wm-body"></div>
+        <a id="wm-email-btn" href="#" class="wm-email">📧 Email HR to Request This Document</a>
+        <span class="wm-cancel" onclick="closeWelcomeModal()">Close</span>
       </div>
     </div>
 
@@ -457,18 +478,33 @@
           <span class="ph-icon">🏖️</span><span class="ph-title">Leave &amp; Time Off</span><span class="ph-arrow">▶</span>
         </div>
         <div class="policy-body">
-          <div class="policy-summary">iRam's leave policy covers annual leave, sick leave, family responsibility leave, and special leave. Leave must be applied for in advance via SimplePay and is subject to operational requirements and manager approval. Sick leave requires supporting documentation for absences over two consecutive days.</div>
+          <div class="policy-summary">iRam's leave policies cover all forms of employee leave in line with the Basic Conditions of Employment Act (BCEA). Leave must be applied for in advance via SimplePay and is subject to operational requirements and manager approval.</div>
           <ul>
-            <li>Annual Leave Policy</li>
-            <li>Training Attendance Etiquette Policy</li>
-            <li>Training Costs Agreement Policy</li>
+            <li><strong>Annual Leave Policy</strong> — Employees are entitled to 15 working days of paid annual leave per leave cycle. Leave must be planned and agreed with your manager in advance. Leave cannot be accumulated indefinitely and is forfeited if not taken within the agreed period.</li>
+            <li><strong>Sick Leave Policy</strong> — 30 days of paid sick leave is granted per 3-year employment cycle. A medical certificate is required for any absence exceeding two consecutive days, or where a pattern of single-day absence is identified. Sick leave without a certificate may be treated as unpaid leave.</li>
+            <li><strong>Family Responsibility Leave</strong> — Employees are entitled to 3 days of paid family responsibility leave per year. This applies in cases of the death of an immediate family member, or the illness of a child. Supporting documentation may be required.</li>
+            <li><strong>Special &amp; Unpaid Leave</strong> — Additional leave for exceptional circumstances (e.g., study leave, maternity/parental leave, or extended personal circumstances) is subject to management and HR approval. Terms are agreed on a case-by-case basis.</li>
+          </ul>
+          <div class="policy-links">
+            <a href="mailto:hr@iram.co.za?subject=Policy Request — Leave Policies" class="policy-dl mail">📧 Request Leave Policy Documents</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="policy-item">
+        <div class="policy-header" onclick="togglePolicy(this)">
+          <span class="ph-icon">🎓</span><span class="ph-title">Training &amp; Attendance</span><span class="ph-arrow">▶</span>
+        </div>
+        <div class="policy-body">
+          <div class="policy-summary">iRam invests in staff development through structured training programmes. All staff are expected to attend scheduled training punctually and professionally. Where iRam funds external training or qualifications, a cost-recovery agreement may apply.</div>
+          <ul>
+            <li><strong>Training Attendance Etiquette Policy</strong> — All employees must attend scheduled training sessions on time and in full. Absence from training must be approved by a manager in advance. Repeated non-attendance or disruptive behaviour during training may be treated as a disciplinary matter. Phones must be on silent and participation is expected throughout.</li>
+            <li><strong>Training Costs Agreement Policy</strong> — Where iRam sponsors an employee's training, study, or qualification, a repayment agreement is signed before training begins. If the employee resigns or is dismissed within 12 months of completing the training, a prorated portion of the training cost must be repaid. The agreement sets out the exact amount, the repayment schedule, and the conditions under which it applies.</li>
           </ul>
           <div class="policy-links">
             <a href="hr-assets/policies/training-attendance.pdf" target="_blank" rel="noopener" class="policy-dl">↓ Training Attendance Policy</a>
             <a href="hr-assets/policies/training-costs.pdf" target="_blank" rel="noopener" class="policy-dl">↓ Training Costs Agreement</a>
-            <a href="mailto:hr@iram.co.za?subject=Policy Request — Annual Leave" class="policy-dl mail">📧 Request Annual Leave Policy</a>
           </div>
-          <div class="hr-note">⚠️ Some leave policies are still under team review. Contact HR for the current confirmed version.</div>
         </div>
       </div>
 
@@ -479,13 +515,13 @@
         <div class="policy-body">
           <div class="policy-summary">iRam requires all staff to maintain professional standards at all times. The disciplinary process follows a progressive structure — verbal warning, written warning, final written warning, and dismissal — and is aligned with CCMA procedures. Employees have the right to representation at any disciplinary hearing.</div>
           <ul>
-            <li>Code of Conduct</li>
-            <li>Disciplinary Code</li>
-            <li>Call Avoidance Policy</li>
-            <li>Call Recording Policy</li>
-            <li>Drug and Alcohol Free Workplace Policy</li>
-            <li>Smoking Policy</li>
-            <li>Desertion / Absconsion Policy</li>
+            <li><strong>Code of Conduct</strong> — Sets the standard for professional behaviour at iRam. Employees are expected to treat colleagues, clients, and management with respect at all times, act with integrity, and represent the company positively.</li>
+            <li><strong>Disciplinary Code</strong> — Defines the progressive disciplinary process: verbal warning → written warning → final written warning → dismissal. Employees have the right to be heard and to have a representative present at any hearing. All processes are aligned to CCMA guidelines.</li>
+            <li><strong>Call Avoidance Policy</strong> — Deliberate avoidance of incoming calls or tasks is a disciplinary offence. Systems are monitored and patterns of avoidance are investigated and addressed through the disciplinary process.</li>
+            <li><strong>Call Recording Policy</strong> — All calls on company systems may be recorded for quality assurance, compliance, and training purposes. Staff are informed of this at onboarding. Recordings may be used in investigations or disputes.</li>
+            <li><strong>Drug and Alcohol Free Workplace Policy</strong> — iRam maintains a zero-tolerance policy on the use or possession of alcohol or illegal substances in the workplace. Reasonable testing may be conducted. Violations are grounds for immediate disciplinary action.</li>
+            <li><strong>Smoking Policy</strong> — Smoking (including vaping) is not permitted inside any iRam premises. Designated areas may be identified at specific sites. Smoking breaks must not interfere with work duties.</li>
+            <li><strong>Desertion / Absconsion Policy</strong> — Absence from work for 3 or more consecutive days without communication is treated as desertion. iRam will attempt contact before initiating a formal process. Absconsion may result in termination of employment.</li>
           </ul>
           <div class="policy-links">
             <a href="mailto:hr@iram.co.za?subject=Policy Request — Code of Conduct" class="policy-dl mail">📧 Request Conduct Policies</a>
@@ -500,11 +536,11 @@
         <div class="policy-body">
           <div class="policy-summary">All company devices, systems, and communications channels must be used responsibly and professionally. Personal use of company IT is limited, and all electronic communications on company systems are subject to monitoring. Social media use that reflects negatively on iRam or its clients is prohibited.</div>
           <ul>
-            <li>Tech Policy 2.0</li>
-            <li>Electronic Communication and Security Policy</li>
-            <li>Mobile Phone Policy</li>
-            <li>Social Media Policy</li>
-            <li>Confidentiality and NDA</li>
+            <li><strong>Tech Policy 2.0</strong> — Governs acceptable use of all company technology including computers, laptops, tablets, and peripherals. Personal use is permitted within reasonable limits but must not interfere with work. Company devices may not be used to access illegal or inappropriate content.</li>
+            <li><strong>Electronic Communication and Security Policy</strong> — All emails, messages, and files sent via company systems are monitored and remain company property. Staff must not share login credentials, must use strong passwords, and must lock devices when away from their desk. Suspicious emails or phishing attempts must be reported to IT immediately.</li>
+            <li><strong>Mobile Phone Policy</strong> — Company mobile phones are for business use. Personal calls should be kept brief. Phones must not be used during client interactions without prior agreement. Lost or stolen devices must be reported to IT within 24 hours so the device can be remotely wiped.</li>
+            <li><strong>Social Media Policy</strong> — Staff may not post content on social media that references iRam, its clients, or colleagues in a way that is negative, misleading, or damaging. Confidential business information must never be shared online. Breaches of this policy are treated as a serious disciplinary matter.</li>
+            <li><strong>Confidentiality and NDA</strong> — All employees sign a confidentiality agreement on joining. Client data, internal processes, financial information, and proprietary systems may not be disclosed during or after employment without written consent. Breaches may result in legal action.</li>
           </ul>
           <div class="policy-links">
             <a href="hr-assets/policies/social-media.pdf" target="_blank" rel="noopener" class="policy-dl">↓ Social Media Policy</a>
@@ -520,11 +556,11 @@
         <div class="policy-body">
           <div class="policy-summary">iRam provides fuel allowances and fleet cards to eligible staff based on role requirements. Company vehicles must be used for business purposes only and any fines or traffic violations incurred in a company vehicle are the responsibility of the driver. Travel claims must be submitted within 30 days of the expense.</div>
           <ul>
-            <li>Fuel Allowance Policy</li>
-            <li>Fuel Fleet Card Policy</li>
-            <li>Company Vehicle and Internal Fines Policy</li>
-            <li>Personal Vehicle Policy</li>
-            <li>Travel Claims and Reimbursement</li>
+            <li><strong>Fuel Allowance Policy</strong> — Eligible staff receive a monthly fuel allowance based on their role and travel requirements. The allowance is structured to cover business travel and is reflected on your payslip. See the Fuel Allowance section above for the full infographic breakdown.</li>
+            <li><strong>Fuel Fleet Card Policy</strong> — Company fuel cards may only be used for business-related fuel and must not be used for personal travel. All transactions are monitored. Misuse of a fleet card is treated as fraud and will be escalated through the disciplinary process.</li>
+            <li><strong>Company Vehicle and Internal Fines Policy</strong> — Company vehicles must only be used for approved business purposes. Any traffic fines, parking violations, or damage incurred while driving a company vehicle are the responsibility of the driver. Fines will be deducted from salary if not settled within the stipulated period.</li>
+            <li><strong>Personal Vehicle Policy</strong> — Where a staff member uses their personal vehicle for business travel, they may claim a per-kilometre reimbursement at the approved SARS rate. Mileage must be recorded and submitted with supporting documentation. No reimbursement is paid for normal home-to-office commuting.</li>
+            <li><strong>Travel Claims and Reimbursement</strong> — All travel-related expenses (accommodation, flights, car hire, etc.) must be pre-approved and claimed within 30 days of the expense date. Claims submitted after this period may not be reimbursed. Original receipts or tax invoices are required for all claims above a nominal threshold.</li>
           </ul>
           <div class="policy-links">
             <a href="hr-assets/fuel-allowance.pdf" target="_blank" rel="noopener" class="policy-dl">↓ Fuel Allowance Infographic</a>
@@ -542,11 +578,11 @@
         <div class="policy-body">
           <div class="policy-summary">Company assets issued to staff (laptops, phones, uniforms) remain iRam property and must be returned in good condition on exit. Staff loans are available subject to approval and payroll deduction agreement. Gifts or benefits received from clients or suppliers above a nominal value must be declared to management.</div>
           <ul>
-            <li>Asset Policy</li>
-            <li>Workwear Policy</li>
-            <li>Staff Loans Policy</li>
-            <li>Discussion of Salaries Policy</li>
-            <li>COI, Bribes and Gifts Policy</li>
+            <li><strong>Asset Policy</strong> — All company assets (laptops, phones, headsets, etc.) issued to staff remain the property of iRam. Items must be maintained in good condition and returned on resignation or termination. Loss or wilful damage may result in cost recovery from the employee.</li>
+            <li><strong>Workwear Policy</strong> — iRam provides branded workwear to eligible staff. Uniforms must be worn during working hours and kept clean and presentable. Replacement workwear may be requested via the Uniform Order Form (see HR Forms section). Staff are responsible for returning items on exit.</li>
+            <li><strong>Staff Loans Policy</strong> — Short-term salary advances or loans may be available to permanent employees in good standing, subject to HR and management approval. Repayment is structured as a payroll deduction over an agreed period. Loans are not available during probation.</li>
+            <li><strong>Discussion of Salaries Policy</strong> — Employees are strongly discouraged from discussing their remuneration with colleagues. Pay is determined by role, performance, and tenure and may vary between individuals. Disputes about pay should be raised confidentially with HR.</li>
+            <li><strong>COI, Bribes and Gifts Policy</strong> — Staff must declare any conflict of interest (COI) where personal relationships or financial interests could influence business decisions. Gifts or benefits received from clients or suppliers above a nominal value (typically R500) must be declared to management. Accepting bribes is grounds for immediate dismissal.</li>
           </ul>
           <div class="policy-links">
             <a href="mailto:hr@iram.co.za?subject=Policy Request — Benefits and Assets" class="policy-dl mail">📧 Request Policy Documents</a>
@@ -561,11 +597,11 @@
         <div class="policy-body">
           <div class="policy-summary">iRam is committed to providing a safe working environment in compliance with the Occupational Health and Safety Act. All staff are required to report hazards, injuries, or near-misses immediately. iRam complies with the Employment Equity Act and POPIA — all staff personal data is handled confidentially and with strict access controls.</div>
           <ul>
-            <li>Occupational Health &amp; Safety (OHS) Policy</li>
-            <li>Employment Equity (AA) Plan</li>
-            <li>BCEA Compliance</li>
-            <li>Confidentiality and NDA</li>
-            <li>Exit Policy</li>
+            <li><strong>Occupational Health &amp; Safety (OHS) Policy</strong> — iRam complies with the Occupational Health and Safety Act. All staff must report hazards, near-misses, or injuries to their manager immediately. Incident reports must be completed within 24 hours. Participation in safety drills and awareness training is mandatory.</li>
+            <li><strong>Employment Equity (AA) Plan</strong> — iRam is committed to the principles of the Employment Equity Act. Our EE plan sets out targets for equitable representation across all occupational levels. Appointments and promotions consider EE requirements alongside skills and experience.</li>
+            <li><strong>BCEA Compliance</strong> — iRam adheres to the Basic Conditions of Employment Act across all employment practices including working hours, overtime, leave entitlements, and pay periods. If you believe your employment conditions do not comply, raise the matter with HR in confidence.</li>
+            <li><strong>Confidentiality and NDA</strong> — Employees have access to sensitive client, financial, and operational data. All staff sign a non-disclosure agreement on joining which remains enforceable after termination. Any breach of confidentiality may result in disciplinary action and/or legal proceedings.</li>
+            <li><strong>Exit Policy</strong> — Upon resignation or termination, employees must serve their full notice period (as per contract), return all company assets, complete an exit interview, and hand over all work in progress. Final pay including outstanding leave is processed on the last day of the notice period.</li>
           </ul>
           <div class="policy-links">
             <a href="mailto:hr@iram.co.za?subject=Policy Request — Health and Safety" class="policy-dl mail">📧 Request Policy Documents</a>
@@ -599,7 +635,65 @@
     // ── SimplePay lightbox ──
     function openLightbox()  { document.getElementById('lightbox').classList.add('open'); }
     function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeMgrModal(); } });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeMgrModal(); closeWelcomeModal(); } });
+
+    // ── Welcome package modal ──
+    const welcomeContent = {
+      handbook: {
+        icon: '📘',
+        title: 'Employee Handbook',
+        body: `<p>The Employee Handbook is your complete guide to life at iRam — our culture, values, and day-to-day expectations.</p>
+               <p style="margin-top:10px"><strong>What it covers:</strong></p>
+               <ul style="padding-left:18px;margin-top:6px;line-height:1.8">
+                 <li>Company history, mission, and values</li>
+                 <li>Organisational structure and key contacts</li>
+                 <li>Working hours, dress code, and communication standards</li>
+                 <li>Summary of core policies and where to find the full versions</li>
+                 <li>What to expect in your first 90 days</li>
+               </ul>`,
+        subject: 'Document Request — Employee Handbook'
+      },
+      fundamental: {
+        icon: '⭐',
+        title: '5 Fundamental Rules',
+        body: `<p>The 5 Fundamental Rules are iRam's non-negotiable standards of behaviour. Every employee is expected to know these rules from day one — they form the foundation of how we work and treat each other.</p>
+               <p style="margin-top:10px"><strong>What they cover:</strong></p>
+               <ul style="padding-left:18px;margin-top:6px;line-height:1.8">
+                 <li>Professional conduct in the workplace</li>
+                 <li>Respect for colleagues, clients, and management</li>
+                 <li>Accountability and ownership of your work</li>
+                 <li>Adherence to iRam's core processes and standards</li>
+                 <li>Behaviour that reflects on the iRam brand</li>
+               </ul>
+               <p style="margin-top:10px;font-size:12.5px;color:#888">These rules are reviewed during onboarding and form the basis of disciplinary processes if violated.</p>`,
+        subject: 'Document Request — 5 Fundamental Rules'
+      },
+      confidential: {
+        icon: '🔒',
+        title: '5 Confidential Rules',
+        body: `<p>The 5 Confidential Rules define the boundaries of what information must stay strictly within iRam. These are binding obligations for all staff.</p>
+               <p style="margin-top:10px"><strong>What they cover:</strong></p>
+               <ul style="padding-left:18px;margin-top:6px;line-height:1.8">
+                 <li>Client data and account information</li>
+                 <li>Internal financial and operational data</li>
+                 <li>Proprietary systems, processes, and intellectual property</li>
+                 <li>Staff personal information and HR matters</li>
+                 <li>Strategic plans and business decisions</li>
+               </ul>
+               <p style="margin-top:10px;font-size:12.5px;color:#888">Distribution of these rules outside iRam — or disclosure of the information they protect — is a disciplinary offence and may result in legal action.</p>`,
+        subject: 'Document Request — 5 Confidential Rules'
+      }
+    };
+
+    function openWelcomeModal(key) {
+      const c = welcomeContent[key];
+      if (!c) return;
+      document.getElementById('wm-title').innerHTML = c.icon + ' ' + c.title;
+      document.getElementById('wm-body').innerHTML = c.body;
+      document.getElementById('wm-email-btn').href = 'mailto:hr@iram.co.za?subject=' + encodeURIComponent(c.subject);
+      document.getElementById('welcome-modal-bg').classList.add('open');
+    }
+    function closeWelcomeModal() { document.getElementById('welcome-modal-bg').classList.remove('open'); }
 
     // ── Policies accordion ──
     function togglePolicy(header) {
