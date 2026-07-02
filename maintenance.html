@@ -252,26 +252,26 @@
         <!-- Drop shadow -->
         <ellipse cx="118" cy="262" rx="72" ry="8" fill="rgba(107,191,78,.1)"/>
 
-        <!-- BODY -->
-        <ellipse cx="120" cy="188" rx="68" ry="50" fill="#f5f3e8"/>
-        <!-- Wing -->
-        <ellipse cx="126" cy="195" rx="54" ry="36" fill="#ebe8d6" transform="rotate(-8 126 195)"/>
-        <path d="M74 182 Q122 162 168 182" stroke="#d5d0be" stroke-width="1.8" fill="none"/>
-        <path d="M78 198 Q122 178 165 198" stroke="#d5d0be" stroke-width="1.4" fill="none"/>
-        <!-- Tail -->
-        <path d="M183 172 L205 154 L200 178 L188 186 Z" fill="#ebe8d6" stroke="#d5d0be" stroke-width="1.2"/>
-        <path d="M186 180 L206 164 L202 185 L192 190 Z" fill="#e4e0ce" stroke="#d5d0be" stroke-width="1"/>
+        <!-- BODY — flat design -->
+        <ellipse cx="120" cy="188" rx="68" ry="50" fill="#dde8e3"/>
+        <!-- Wing shadow (lower body) -->
+        <ellipse cx="104" cy="198" rx="54" ry="36" fill="#c6d8d1" transform="rotate(-8 104 198)"/>
+        <!-- Wing highlight (upper front) -->
+        <ellipse cx="140" cy="176" rx="60" ry="34" fill="#e8f2ee" transform="rotate(-12 140 176)"/>
+        <!-- Tail — dark slate -->
+        <path d="M183 172 L205 154 L200 178 L188 186 Z" fill="#546e7a"/>
+        <path d="M186 180 L206 164 L202 185 L192 190 Z" fill="#607d8b"/>
 
-        <!-- NECK (S-curve, two-tone for depth) -->
+        <!-- NECK (S-curve, flat two-tone) -->
         <path d="M102 148 Q72 122 78 90 Q84 64 88 48"
-              stroke="#dedad0" stroke-width="28" fill="none" stroke-linecap="round"/>
+              stroke="#c8dbd5" stroke-width="28" fill="none" stroke-linecap="round"/>
         <path d="M102 148 Q72 122 78 90 Q84 64 88 48"
-              stroke="#f5f3e8" stroke-width="23" fill="none" stroke-linecap="round"/>
+              stroke="#eef4f1" stroke-width="23" fill="none" stroke-linecap="round"/>
 
         <!-- HEAD + accessories group -->
         <g class="goose-head-group">
           <!-- HEAD -->
-          <ellipse cx="88" cy="38" rx="23" ry="18" fill="#f5f3e8" stroke="#dedad0" stroke-width="1.5"/>
+          <ellipse cx="88" cy="38" rx="23" ry="18" fill="#edf4f0"/>
 
           <!-- HARD HAT -->
           <ellipse cx="88" cy="23" rx="28" ry="8" fill="#FFD700"/>
@@ -285,23 +285,23 @@
           <line x1="98" y1="20" x2="98" y2="25" stroke="#e6a800" stroke-width="1.5"/>
 
           <!-- EYE -->
-          <circle cx="76" cy="34" r="6" fill="#1a1a1a"/>
-          <circle cx="75" cy="33" r="2.3" fill="white"/>
+          <circle cx="76" cy="34" r="6" fill="#3d2b1f"/>
+          <circle cx="75" cy="33" r="2.3" fill="white" opacity=".7"/>
           <!-- Eyebrow (determined look) -->
           <path d="M70 28 Q76 26 82 28" stroke="#a8a090" stroke-width="2" fill="none" stroke-linecap="round"/>
 
           <!-- BEAK -->
-          <path d="M67 40 L46 37 L46 45 L67 43 Z" fill="#e07828"/>
-          <line x1="46" y1="41" x2="67" y2="41" stroke="#b86018" stroke-width="1"/>
+          <path d="M67 40 L46 37 L46 45 L67 43 Z" fill="#FFA726"/>
+          <line x1="46" y1="41" x2="67" y2="41" stroke="#e89020" stroke-width="1"/>
           <!-- Nostril -->
-          <ellipse cx="58" cy="39" rx="3" ry="2" fill="#c06020" opacity="0.5"/>
+          <ellipse cx="58" cy="39" rx="3" ry="2" fill="#e08014" opacity="0.5"/>
         </g>
 
         <!-- WRENCH ARM (extends from body, animated) -->
         <g class="wrench-arm">
           <!-- Arm/wing extension -->
-          <path d="M182 168 Q205 152 210 135" stroke="#f0eed8" stroke-width="18" fill="none" stroke-linecap="round"/>
-          <path d="M182 168 Q205 152 210 135" stroke="#e8e4d2" stroke-width="14" fill="none" stroke-linecap="round"/>
+          <path d="M182 168 Q205 152 210 135" stroke="#c8dbd5" stroke-width="18" fill="none" stroke-linecap="round"/>
+          <path d="M182 168 Q205 152 210 135" stroke="#eef4f1" stroke-width="14" fill="none" stroke-linecap="round"/>
           <!-- Wrench head -->
           <g transform="translate(204,124) rotate(-28)">
             <!-- Handle -->
@@ -328,12 +328,12 @@
 
         <!-- LEGS -->
         <g class="leg-l">
-          <line x1="100" y1="234" x2="86"  y2="256" stroke="#e07828" stroke-width="6.5" stroke-linecap="round"/>
-          <path d="M86 256 L72 256 L79 250 M86 256 L90 262" stroke="#e07828" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="100" y1="234" x2="86"  y2="256" stroke="#FFA726" stroke-width="6.5" stroke-linecap="round"/>
+          <path d="M86 256 L72 256 L79 250 M86 256 L90 262" stroke="#FFA726" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
         </g>
         <g class="leg-r">
-          <line x1="132" y1="236" x2="146" y2="258" stroke="#e07828" stroke-width="6.5" stroke-linecap="round"/>
-          <path d="M146 258 L132 258 L139 252 M146 258 L150 264" stroke="#e07828" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="132" y1="236" x2="146" y2="258" stroke="#FFA726" stroke-width="6.5" stroke-linecap="round"/>
+          <path d="M146 258 L132 258 L139 252 M146 258 L150 264" stroke="#FFA726" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
         </g>
 
       </svg>
