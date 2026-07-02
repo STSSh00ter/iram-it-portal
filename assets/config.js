@@ -25,7 +25,7 @@ const IRAM_CONFIG = {
   // Fallback admin password, used ONLY if the ADMIN_PASSWORD env var is not set.
   // For real security set ADMIN_PASSWORD in Vercel (verified server-side) and
   // remove this value — anything here is visible in the browser via View Source.
-  adminPassword:    'iRamIT2024!',                                      // ←
+  adminPassword:    '',  // kept server-side in Vercel ADMIN_PASSWORD env var
 
   // IT staff who can be assigned to a ticket.
   // `role` groups them (Dev / Ops / Support / etc.) and is shown to the submitter
