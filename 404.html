@@ -139,17 +139,17 @@
       transform-origin: center bottom;
       animation: gwalk 14s ease-in-out infinite;
     }
+    /* Walker only moves horizontally — flipping happens on the SVG itself
+       so the speech bubble / question marks never mirror */
     @keyframes gwalk {
-      0%       { left:5%;   transform:scaleX(-1); }
-      25%      { left:55%;  transform:scaleX(-1); }
-      33%      { left:55%;  transform:scaleX( 1); }   /* turn around */
-      58%      { left:6%;   transform:scaleX( 1); }
-      65%      { left:6%;   transform:scaleX(-1); }   /* turn */
-      70%      { left:28%;  transform:scaleX(-1); }   /* walk to middle */
-      74%      { left:28%;  transform:scaleX( 1); }   /* confused turn */
-      80%      { left:28%;  transform:scaleX( 1); }   /* pause */
-      86%      { left:28%;  transform:scaleX(-1); }
-      100%     { left:5%;   transform:scaleX(-1); }
+      0%       { left:5%;  }
+      25%      { left:55%; }
+      33%      { left:55%; }   /* pause + turn */
+      58%      { left:6%;  }
+      65%      { left:6%;  }   /* pause + turn */
+      70%      { left:28%; }   /* walk to middle */
+      86%      { left:28%; }   /* confused pause */
+      100%     { left:5%;  }
     }
 
     /* Bobber handles vertical hop (nested so it doesn't affect X) */
@@ -159,12 +159,12 @@
     }
     @keyframes gbob { to { transform: translateY(-9px); } }
 
-    /* Speech bubble — counter-flip via scaleX(-1) inherited from parent */
+    /* Speech bubble — parent never flips, so text stays readable */
     .goose-bubble {
       position: absolute;
       bottom: calc(100% + 8px);
       left: 50%;
-      transform: translateX(-50%) scaleX(var(--flip,1));
+      transform: translateX(-50%);
       background: white;
       border: 2px solid #ddd;
       border-radius: 14px;
@@ -212,11 +212,21 @@
       100%    { opacity:0; }
     }
 
-    /* Goose SVG */
+    /* Goose SVG — carries the direction flip.
+       SVG art faces LEFT natively; scaleX(-1) = facing right. */
     .goose-svg {
       display: block;
       width: 110px;
       height: auto;
+      transform-origin: center;
+      animation: gflip 14s ease-in-out infinite;
+    }
+    @keyframes gflip {
+      0%       { transform: scaleX( 1); }   /* just arrived, facing left */
+      4%,26%   { transform: scaleX(-1); }   /* walking right (0–25%) */
+      31%,60%  { transform: scaleX( 1); }   /* walking left (33–58%) */
+      64%,71%  { transform: scaleX(-1); }   /* walking right to middle (65–70%) */
+      76%,100% { transform: scaleX( 1); }   /* confused pause + walk back left */
     }
     /* Head tilt (confusion) */
     .g-head {
